@@ -3,16 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <title>蔵書リスト</title>
-<script>
-  function hasAuthCookie() {
-    return document.cookie.split(';').some(cookie => cookie.trim().startsWith('auth=ok'));
-  }
-
-  if (!hasAuthCookie()) {
-    window.location.href = "login.html";
-  }
-</script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/2.3.1/list.min.js"></script>
+  <script>
+    function hasAuthCookie() {
+      return document.cookie.split(';').some(cookie => cookie.trim().startsWith('auth=ok'));
+    }
+    if (!hasAuthCookie()) {
+      window.location.href = "login.html";
+    }
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/2.3.1/list.min.js" defer></script>
   <style>
     body {
       font-family: sans-serif;
@@ -46,9 +45,10 @@
 <body>
 
   <h1>蔵書リスト</h1>
-  <input class="search" placeholder="タイトルや著者で検索" />
 
   <div id="booklist">
+    <input class="search" placeholder="タイトルや著者で検索" />
+
     <table>
       <thead>
         <tr>
@@ -67,32 +67,25 @@
   </div>
 
   <script>
-    // CSVを読み込んで表に変換
-    fetch("display_list.csv")
-      .then(response => response.text())
-      .then(text => {
-        const rows = text.trim().split("\n").slice(1); // ヘッダー除く
-        const tbody = document.getElementById("book-tbody");
-        rows.forEach(row => {
-          const cols = row.split(",");
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td class="title">${cols[0]}</td>
-            <td class="author">${cols[1]}</td>
-            <td class="volume">${cols[2]}</td>
-            <td class="category">${cols[3]}</td>
-            <td class="sub">${cols[4]}</td>
-            <td class="date">${cols[5]}</td>
-          `;
-          tbody.appendChild(tr);
-        });
+    document.addEventListener("DOMContentLoaded", function () {
+      fetch("display_list.csv")
+        .then(response => response.text())
+        .then(text => {
+          const rows = text.trim().split("\n").slice(1);
+          const tbody = document.getElementById("book-tbody");
+          rows.forEach(row => {
+            const cols = row.split(",");
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+              <td class="title">${cols[0]}</td>
+              <td class="author">${cols[1]}</td>
+              <td class="volume">${cols[2]}</td>
+              <td class="category">${cols[3]}</td>
+              <td class="sub">${cols[4]}</td>
+              <td class="date">${cols[5]}</td>
+            `;
+            tbody.appendChild(tr);
+          });
 
-        // List.jsによる検索機能を有効化
-        new List('booklist', {
-          valueNames: ['title', 'author', 'volume', 'category', 'sub', 'date']
-        });
-      });
-  </script>
-
-</body>
-</html>
+          new List('booklist', {
+            valueNa
