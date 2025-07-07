@@ -3,14 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>蔵書リスト</title>
-  <script>
-    function hasAuthCookie() {
-      return document.cookie.split(';').some(cookie => cookie.trim().startsWith('auth=ok'));
-    }
-    if (!hasAuthCookie()) {
-      window.location.href = "login.html";
-    }
-  </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/2.3.1/list.min.js" defer></script>
   <style>
     body {
@@ -21,7 +13,7 @@
     h1 {
       text-align: center;
     }
-    input.search {
+    #booklist input.search {
       display: block;
       margin: 0 auto 20px auto;
       padding: 10px;
@@ -43,12 +35,10 @@
   </style>
 </head>
 <body>
-
   <h1>蔵書リスト</h1>
 
   <div id="booklist">
     <input class="search" placeholder="タイトルや著者で検索" />
-
     <table>
       <thead>
         <tr>
@@ -61,31 +51,14 @@
         </tr>
       </thead>
       <tbody class="list" id="book-tbody">
-        <!-- CSVデータがここに挿入されます -->
+        <!-- ここにCSVから読み込んだデータを挿入 -->
       </tbody>
     </table>
   </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", () => {
       fetch("display_list.csv")
         .then(response => response.text())
         .then(text => {
-          const rows = text.trim().split("\n").slice(1);
-          const tbody = document.getElementById("book-tbody");
-          rows.forEach(row => {
-            const cols = row.split(",");
-            const tr = document.createElement("tr");
-            tr.innerHTML = `
-              <td class="title">${cols[0]}</td>
-              <td class="author">${cols[1]}</td>
-              <td class="volume">${cols[2]}</td>
-              <td class="category">${cols[3]}</td>
-              <td class="sub">${cols[4]}</td>
-              <td class="date">${cols[5]}</td>
-            `;
-            tbody.appendChild(tr);
-          });
-
-          new List('booklist', {
-            valueNa
+          const rows = text.trim().split("\n");
