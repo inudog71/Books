@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>蔵書検索</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/2.3.1/list.min.js"></script>
+  <style>
+    body { font-family: sans-serif; margin: 20px; }
+    #main { display: none; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+  </style>
+</head>
+<body>
+  <div id="auth">
+    <h2>🔒 パスワードを入力</h2>
+    <input type="password" id="pw" placeholder="パスワード">
+    <button onclick="check()">OK</button>
+  </div>
+
+  <div id="main">
+    <h1>📚 蔵書検索</h1>
+    <input class="search" placeholder="キーワードで検索（タイトル・著者など）" />
+    <table>
+      <thead>
+        <tr>
+          <th>タイトル</th><th>著者</th><th>巻号</th><th>大分類</th><th>小分類</th><th>リスト化日</th>
+        </tr>
+      </thead>
+      <tbody class="list" id="list-body">
+        <!-- JSで挿入されます -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    const PASSWORD = "123"; // 任意のパスワードを設定
+
+    function check() {
+      const pw = document.getElementById("pw").value;
+      if (pw === PASSWORD) {
+        document.getElementById("auth").style.display = "none";
+        document.getElementById("main").style.display = "block";
+        loadCSV(); // パスワード正解後に読み込み開始
+      } else {
+        alert("パスワードが違います");
+      }
+    }
+
+    function loadCSV() {
+      fetch("display_list.csv")  // 表示用CSVファイル名（リポジトリ内に置く）
+        .then(res => res.text())
+        .then(csv => {
+          const lines = csv.trim().split("\n").slice(1); // 1行目はヘッダー
+          const tbody = document.getElementById("list-body");
+          lines.forEach(line => {
+            const [title, author, volume, category, kana, date] = line.split(",");
+            const row = document.createElement("tr");
+            row.innerHTML = `<td class="title">${title}</td>
+                             <td class="author">${author}</td>
+                             <td>${volume}</td>
+                             <td>${category}</td>
+                             <td>${kana}</td>
+                             <td>${date}</td>`;
+            tbody.appendChild(row);
+          });
+          new List('main', { valueNames: ['title', 'author'] });
+        });
+    }
+  </script>
+</body>
+</html>
