@@ -3,16 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <title>蔵書リスト</title>
-<script>
-  function hasAuthCookie() {
-    return document.cookie.split(';').some(cookie => cookie.trim().startsWith('auth=ok'));
-  }
-
-  if (!hasAuthCookie()) {
-    window.location.href = "login.html";
-  }
-</script>
-
+  <script>
+    // 🔒 クッキー認証チェック（未ログインならlogin.htmlへ）
+    if (!document.cookie.includes("auth=ok")) {
+      window.location.href = "login.html";
+    }
+  </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/2.3.1/list.min.js"></script>
   <style>
     body {
