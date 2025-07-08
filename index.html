@@ -43,17 +43,10 @@
     th {
       background: #f0f0f0;
     }
-    td a {
-      color: #0066cc;
-      text-decoration: none;
-    }
-    td a:hover {
-      text-decoration: underline;
-    }
   </style>
 </head>
 <body>
-  <h1>蔵書リスト</h1>
+  <h1>リスト</h1>
 
   <div id="booklist">
     <input class="search" placeholder="タイトルや著者で検索" />
@@ -85,10 +78,9 @@
 
           rows.forEach(row => {
             const cols = row.split(",");
-            const titleEncoded = encodeURIComponent(cols[0]);
             const tr = document.createElement("tr");
             tr.innerHTML = `
-              <td class="title"><a href="details/${titleEncoded}.html" target="_blank">${cols[0]}</a></td>
+              <td class="title">${cols[0]}</td>
               <td class="author">${cols[1]}</td>
               <td class="category">${cols[2]}</td>
               <td class="sub">${cols[3]}</td>
