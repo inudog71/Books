@@ -4,15 +4,15 @@
   <meta charset="UTF-8">
   <title>リスト</title>
 
-<script>
-  function hasAuthCookie() {
-    return document.cookie.split(';').some(cookie => cookie.trim().startsWith('auth=ok'));
-  }
+  <script>
+    function hasAuthCookie() {
+      return document.cookie.split(';').some(cookie => cookie.trim().startsWith('auth=ok'));
+    }
 
-  if (!hasAuthCookie()) {
-    window.location.href = "login.html";
-  }
-</script>
+    if (!hasAuthCookie()) {
+      window.location.href = "login.html";
+    }
+  </script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/2.3.1/list.min.js" defer></script>
   <style>
@@ -43,6 +43,13 @@
     th {
       background: #f0f0f0;
     }
+    td a {
+      color: #0066cc;
+      text-decoration: none;
+    }
+    td a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -55,14 +62,13 @@
         <tr>
           <th>タイトル</th>
           <th>著者</th>
-          <th>巻号</th>
           <th>大分類</th>
           <th>小分類</th>
-          <th>リスト化日</th>
+          <th>更新日</th>
         </tr>
       </thead>
       <tbody class="list" id="book-tbody">
-        <!-- ここにCSVから読み込んだデータを挿入 -->
+        <!-- CSVからのデータ -->
       </tbody>
     </table>
   </div>
@@ -73,25 +79,26 @@
         .then(response => response.text())
         .then(text => {
           const rows = text.trim().split("\n");
-          const header = rows.shift(); // ヘッダー削除
+          rows.shift(); // ヘッダー行を削除
+
           const tbody = document.getElementById("book-tbody");
 
           rows.forEach(row => {
             const cols = row.split(",");
+            const titleEncoded = encodeURIComponent(cols[0]);
             const tr = document.createElement("tr");
             tr.innerHTML = `
-              <td class="title">${cols[0]}</td>
+              <td class="title"><a href="details/${titleEncoded}.html" target="_blank">${cols[0]}</a></td>
               <td class="author">${cols[1]}</td>
-              <td class="volume">${cols[2]}</td>
-              <td class="category">${cols[3]}</td>
-              <td class="sub">${cols[4]}</td>
-              <td class="date">${cols[5]}</td>
+              <td class="category">${cols[2]}</td>
+              <td class="sub">${cols[3]}</td>
+              <td class="date">${cols[4]}</td>
             `;
             tbody.appendChild(tr);
           });
 
           new List('booklist', {
-            valueNames: ['title', 'author', 'volume', 'category', 'sub', 'date']
+            valueNames: ['title', 'author', 'category', 'sub', 'date']
           });
         });
     });
